@@ -3,9 +3,6 @@ name: Check In
 # 用户选择的自动签到：北京时间每天 07:00（UTC 前一天 23:00）。
 # 以本工作流最近一次成功运行为续期凭据，保留全部运行日志。
 on:
-  push:
-    branches: [master]
-    paths: [".github/deployment-test.txt"]
   schedule:
     - cron: "0 23 * * *"
   workflow_dispatch:
