@@ -1,0 +1,1 @@
+Initial cloud deployment validation: news sources, DeepSeek, DingTalk, cache, check-in.

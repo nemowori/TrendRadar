@@ -1,6 +1,9 @@
 name: Get Hot News
 
 on:
+  push:
+    branches: [master]
+    paths: [".github/deployment-test.txt"]
   schedule:
     # 每小时采集一次，避开整点高峰；时间线按 Asia/Shanghai 决定晚间推送。
     - cron: "17 * * * *"
@@ -73,7 +76,7 @@ jobs:
         run: uv sync --frozen --no-dev
 
       - name: Configure manual preview
-        if: github.event_name == 'workflow_dispatch' && inputs.send_now
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.send_now)
         run: |
           uv run python - <<'PY'
           from pathlib import Path
@@ -86,7 +89,7 @@ jobs:
           PY
 
       - name: Test DingTalk delivery
-        if: github.event_name == 'workflow_dispatch' && inputs.send_now
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.send_now)
         env:
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
         run: |
