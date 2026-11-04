@@ -1,28 +1,32 @@
 name: Check In
 
-# ✅ 签到续期：运行此 workflow 可重置 7 天计时，保持 "Get Hot News" 正常运行
-# ✅ Renewal: Run this workflow to reset the 7-day timer and keep "Get Hot News" active
-#
-# 📌 操作方法 / How to use:
-#   1. 点击 "Run workflow" 按钮 / Click "Run workflow" button
-#   2. 每 7 天内至少运行一次 / Run at least once every 7 days
-
+# 用户选择的自动签到：北京时间每天 07:00（UTC 前一天 23:00）。
+# 以本工作流最近一次成功运行为续期凭据，保留全部运行日志。
 on:
+  schedule:
+    - cron: "0 23 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: trendradar-check-in
+  cancel-in-progress: false
+
 jobs:
-  del_runs:
+  check_in:
     runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: read
+    timeout-minutes: 5
     steps:
-      - name: Delete all workflow runs
-        uses: Mattraks/delete-workflow-runs@v2
-        with:
-          token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          retain_days: 0
-          keep_minimum_runs: 0
-          delete_workflow_by_state_pattern: "ALL"
-          delete_run_by_conclusion_pattern: "ALL"
+      - name: Renew and enable news workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow enable crawler.yml
+          echo "签到成功，已确认新闻工作流启用。" >> "$GITHUB_STEP_SUMMARY"
+          TZ=Asia/Shanghai date '+北京时间 %Y-%m-%d %H:%M:%S' >> "$GITHUB_STEP_SUMMARY"
+          echo "保留运行历史；七天有效期从本次成功签到计算。" >> "$GITHUB_STEP_SUMMARY"
