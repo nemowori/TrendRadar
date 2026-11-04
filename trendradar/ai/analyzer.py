@@ -200,6 +200,9 @@ class AIAnalyzer:
         user_prompt = user_prompt.replace("{news_content}", prepared.news_content)
         user_prompt = user_prompt.replace("{rss_content}", prepared.rss_content)
         user_prompt = user_prompt.replace("{language}", self.language)
+        if "{market_content}" in user_prompt:
+            from trendradar.market_movers import read_market_context
+            user_prompt = user_prompt.replace("{market_content}", read_market_context())
 
         # 构建独立展示区内容
         standalone_content = ""

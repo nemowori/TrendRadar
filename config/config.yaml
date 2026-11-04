@@ -65,6 +65,9 @@ platforms:
   enabled: true
   api_url: ""
   sources:
+    - id: "a-share-movers"
+      name: "A股涨跌幅榜（东方财富行情）"
+      expected_domain: "eastmoney.com"
     - id: "cls-hot"
       name: "财联社热门"
       expected_domain: "cls.cn"
@@ -187,18 +190,19 @@ ai_filter:
 display:
   region_order:
     - ai_analysis
+    - standalone
     - hotlist
     - rss
   regions:
     hotlist: true
     new_items: false
     rss: true
-    standalone: false
+    standalone: true
     ai_analysis: true
   standalone:
-    platforms: ["cls-telegraph", "wallstreetcn-quick", "jin10", "ifeng", "thepaper", "mktnews-flash"]
-    rss_feeds: ["un-news-zh", "bbc-world", "bbc-business"]
-    max_items: 15
+    platforms: ["a-share-movers"]
+    rss_feeds: []
+    max_items: 20
 
 notification:
   enabled: true                       # 是否启用通知功能（true=启用, false=关闭）—— 总开关

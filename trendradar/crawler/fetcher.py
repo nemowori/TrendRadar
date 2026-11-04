@@ -108,6 +108,14 @@ class DataFetcher:
             id_value = id_info
             alias = id_value
 
+        if id_value == "a-share-movers":
+            try:
+                from trendradar.market_movers import fetch_market_movers
+                return json.dumps(fetch_market_movers(), ensure_ascii=False), id_value, alias
+            except Exception as error:
+                print(f"[A股异动] 获取失败：{type(error).__name__}；其他新闻继续处理")
+                return None, id_value, alias
+
         url = f"{self.api_url}?id={id_value}&latest"
 
         proxies = None
