@@ -5,6 +5,7 @@ name: Check In
 on:
   schedule:
     - cron: "0 23 * * *"
+    - cron: "23,43 23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -26,7 +27,10 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          gh workflow enable crawler.yml
+          STATE=$(gh api "repos/$GH_REPO/actions/workflows/crawler.yml" --jq '.state')
+          if [ "$STATE" != "active" ]; then
+            gh workflow enable crawler.yml
+          fi
           echo "签到成功，已确认新闻工作流启用。" >> "$GITHUB_STEP_SUMMARY"
           TZ=Asia/Shanghai date '+北京时间 %Y-%m-%d %H:%M:%S' >> "$GITHUB_STEP_SUMMARY"
           echo "保留运行历史；七天有效期从本次成功签到计算。" >> "$GITHUB_STEP_SUMMARY"

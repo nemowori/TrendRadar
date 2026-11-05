@@ -1,0 +1,29 @@
+name: Configure Independent Scheduler
+
+# Run once after the user has authorized this provider and added both secrets.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: configure-independent-scheduler
+  cancel-in-progress: false
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Create or update independent schedules
+        env:
+          CRON_JOB_API_KEY: ${{ secrets.CRON_JOB_API_KEY }}
+          SCHEDULER_GITHUB_TOKEN: ${{ secrets.SCHEDULER_GITHUB_TOKEN }}
+        run: python scripts/setup_external_scheduler.py

@@ -6,12 +6,18 @@ on:
     - cron: "17 * * * *"
     # 北京时间08:00、11:00、17:00，分别对应UTC 00:00、03:00、09:00。
     - cron: "0 0,3,9 * * *"
+    # GitHub 内置补触发；独立云端触发器也使用 workflow_dispatch。
+    - cron: "7,27,47 0,1,3,4,9,10 * * *"
   workflow_dispatch:
     inputs:
       send_now:
         description: "立即发送当前财经新闻，验证钉钉推送"
         type: boolean
-        default: true
+        default: false
+      check_only:
+        description: "仅检查触发链路与发送记录，不调用AI、不发消息"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -64,6 +70,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore durable delivery ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          STATE_ARTIFACT: delivery-ledger-v1-${{ github.ref_name }}
+          STATE_BRANCH: ${{ github.ref_name }}
+          STATE_REPOSITORY_ID: ${{ github.repository_id }}
+        run: |
+          set -euo pipefail
+          ARTIFACT_RUN=$(gh api "repos/$GH_REPO/actions/artifacts?name=$STATE_ARTIFACT&per_page=100" --jq "[.artifacts[] | select(.expired == false and .workflow_run.head_branch == \"$STATE_BRANCH\" and .workflow_run.head_repository_id == $STATE_REPOSITORY_ID)] | sort_by(.created_at) | last | .workflow_run.id // empty")
+          if [ -n "$ARTIFACT_RUN" ]; then
+            gh run download "$ARTIFACT_RUN" --repo "$GH_REPO" --name "$STATE_ARTIFACT" --dir .delivery-state
+          else
+            echo "首次使用发送台账，从已有新闻数据库导入发送记录。"
+          fi
+
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
@@ -72,8 +94,16 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --no-dev
 
+      - name: Check scheduled delivery
+        id: delivery
+        env:
+          RUN_KIND: ${{ github.event_name }}
+          FORCE_PREVIEW: ${{ inputs.send_now || false }}
+          CHECK_ONLY: ${{ inputs.check_only || false }}
+        run: uv run python scripts/delivery_guard.py prepare
+
       - name: Configure manual preview
-        if: github.event_name == 'workflow_dispatch' && inputs.send_now
+        if: steps.delivery.outputs.run == 'true' && github.event_name == 'workflow_dispatch' && inputs.send_now
         run: |
           uv run python - <<'PY'
           from pathlib import Path
@@ -86,7 +116,7 @@ jobs:
           PY
 
       - name: Test DingTalk delivery
-        if: github.event_name == 'workflow_dispatch' && inputs.send_now
+        if: steps.delivery.outputs.run == 'true' && github.event_name == 'workflow_dispatch' && inputs.send_now
         env:
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
         run: |
@@ -94,6 +124,8 @@ jobs:
           uv run python -m trendradar --test-notification
 
       - name: Run crawler
+        id: crawler
+        if: steps.delivery.outputs.run == 'true'
         env:
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
           AI_ANALYSIS_ENABLED: "true"
@@ -102,14 +134,32 @@ jobs:
           test -n "$DINGTALK_WEBHOOK_URL" || { echo "::error::缺少钉钉推送密钥"; exit 1; }
           test -n "$AI_API_KEY" || { echo "::error::缺少 AI_API_KEY"; exit 1; }
           uv run python -m trendradar
+          uv run python scripts/delivery_guard.py verify
+
+      - name: Snapshot successful delivery records
+        id: ledger
+        if: always() && steps.delivery.outcome == 'success'
+        run: uv run python scripts/delivery_guard.py snapshot
+
+      - name: Persist delivery ledger independently of cache
+        if: always() && steps.ledger.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: delivery-ledger-v1-${{ github.ref_name }}
+          path: .delivery-state/state.json
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: error
 
       - name: Save collected news and push state
+        if: always() && steps.crawler.outcome != 'skipped' && steps.delivery.outputs.run == 'true'
         uses: actions/cache/save@v4
         with:
           path: output
           key: ${{ steps.news-cache.outputs.cache-primary-key }}
 
       - name: Save readable news report
+        if: steps.delivery.outputs.run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: finance-news-${{ github.run_id }}-${{ github.run_attempt }}
