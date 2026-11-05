@@ -31,9 +31,9 @@ def job_specs(repository, token):
         }
 
     return [
-        make("TrendRadar news (08/11/17 Beijing)", "crawler.yml",
+        make("TrendRadar 财经简报｜每日8/11/17点", "crawler.yml",
              [8, 9, 11, 12, 17, 18], [0, 10, 30, 50], {"send_now": False, "check_only": False}),
-        make("TrendRadar check-in (07 Beijing)", "clean-crawler.yml", [7], [0, 20, 40], {}),
+        make("TrendRadar 每日7点签到", "clean-crawler.yml", [7], [0, 20, 40], {}),
     ]
 
 
