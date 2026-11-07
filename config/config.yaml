@@ -117,6 +117,34 @@ rss:
     - id: "bbc-business"
       name: "BBC财经新闻"
       url: "https://feeds.bbci.co.uk/news/business/rss.xml"
+    - id: "reuters-google-news"
+      name: "路透社（Google 新闻索引）"
+      url: "https://news.google.com/rss/search?q=site%3Areuters.com+when%3A1d&hl=en-US&gl=US&ceid=US%3Aen"
+      max_items: 40
+    - id: "ft-global-economy"
+      name: "金融时报·全球经济"
+      url: "https://www.ft.com/global-economy?format=rss"
+      max_items: 25
+    - id: "cnbc-economy"
+      name: "CNBC·经济"
+      url: "https://www.cnbc.com/id/20910258/device/rss/rss.html"
+      max_items: 30
+    - id: "bbc-technology"
+      name: "BBC科技"
+      url: "https://feeds.bbci.co.uk/news/technology/rss.xml"
+      max_items: 25
+    - id: "ieee-spectrum"
+      name: "IEEE Spectrum·前沿科技"
+      url: "https://spectrum.ieee.org/feeds/feed.rss"
+      max_items: 30
+    - id: "chinanews-finance"
+      name: "中新网财经"
+      url: "https://www.chinanews.com.cn/rss/finance.xml"
+      max_items: 30
+    - id: "chinanews-politics"
+      name: "中新网时政"
+      url: "https://www.chinanews.com.cn/rss/china.xml"
+      max_items: 30
 
 report:
   mode: "daily"
