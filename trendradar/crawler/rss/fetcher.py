@@ -12,7 +12,7 @@ from typing import List, Dict, Optional, Tuple
 
 import requests
 
-from .parser import RSSParser
+from .parser import CCTV_XWLB_URL, RSSParser
 from trendradar.storage.base import RSSItem, RSSData
 from trendradar.utils.time import get_configured_time, is_within_days, DEFAULT_TIMEZONE
 
@@ -118,7 +118,10 @@ class RSSFetcher:
                     ):
                         raise
 
-            parsed_items = self.parser.parse(response.text, feed.url)
+            if feed.url == CCTV_XWLB_URL:
+                parsed_items = self.parser.parse_cctv_xwlb(response.content.decode("utf-8"))
+            else:
+                parsed_items = self.parser.parse(response.text, feed.url)
 
             # 限制条目数量（0=不限制）
             if feed.max_items > 0:

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from email.utils import parsedate_to_datetime
+from html.parser import HTMLParser
 
 try:
     import feedparser
@@ -19,6 +20,33 @@ try:
 except ImportError:
     HAS_FEEDPARSER = False
     feedparser = None
+
+
+CCTV_XWLB_URL = "https://tv.cctv.com/lm/xwlb/"
+_CCTV_VIDEO_URL = re.compile(r"https://tv\.cctv\.com/(\d{4}/\d{2}/\d{2})/VIDE[A-Za-z0-9]+\.shtml")
+
+
+class _CCTVProgrammePage(HTMLParser):
+    """提取节目列表中带有标题的视频链接。"""
+
+    def __init__(self):
+        super().__init__()
+        self.links: Dict[str, str] = {}
+        self._list_depth = 0
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag == "ul" and (self._list_depth or attributes.get("id") == "content"):
+            self._list_depth += 1
+        elif tag == "a" and self._list_depth:
+            url = attributes.get("href")
+            title = attributes.get("title")
+            if url and title:
+                self.links.setdefault(url, title)
+
+    def handle_endtag(self, tag):
+        if tag == "ul" and self._list_depth:
+            self._list_depth -= 1
 
 
 @dataclass
@@ -74,6 +102,29 @@ class RSSParser:
             if item:
                 items.append(item)
 
+        return items
+
+    def parse_cctv_xwlb(self, content: str) -> List[ParsedRSSItem]:
+        """将央视《新闻联播》官网的节目列表转换为新闻条目。"""
+        page = _CCTVProgrammePage()
+        page.feed(content)
+        page.close()
+
+        items = []
+        for url, raw_title in page.links.items():
+            match = _CCTV_VIDEO_URL.fullmatch(url)
+            if not match:
+                continue
+
+            title = self._clean_text(raw_title).removeprefix("[视频]").strip()
+            # 列表未给出分条发布时间，使用节目日期和北京时间播出时刻。
+            date = match[1].replace("/", "-")
+            aired_at = self._parse_iso_date(f"{date}T19:00:00+08:00")
+            if title and aired_at:
+                items.append(ParsedRSSItem(title=title, url=url, published_at=aired_at, guid=url))
+
+        if not items:
+            raise ValueError("央视《新闻联播》官网未返回节目条目")
         return items
 
     def _is_json_feed(self, content: str) -> bool:

@@ -145,6 +145,9 @@ rss:
       name: "中新网时政"
       url: "https://www.chinanews.com.cn/rss/china.xml"
       max_items: 30
+    - id: "cctv-xwlb"
+      name: "央视《新闻联播》"
+      url: "https://tv.cctv.com/lm/xwlb/"
 
 report:
   mode: "daily"
