@@ -1,4 +1,4 @@
-"""Timestamped A-share rankings and issuer-announcement evidence.
+"""Timestamped A-share indices, turnover, rankings and issuer announcements.
 
 Rankings are a quote-provider snapshot, not an exchange abnormal-trading finding.
 Failure is explicit; an older cached ranking is never substituted as current.
@@ -18,11 +18,21 @@ import requests
 CHINA = timezone(timedelta(hours=8))
 SNAPSHOT_PATH = Path("output/market/latest.json")
 RANK_URL = "https://push2.eastmoney.com/api/qt/clist/get"
+INDEX_URL = "https://push2.eastmoney.com/api/qt/ulist.np/get"
 NOTICE_URL = "https://np-anotice-stock.eastmoney.com/api/security/ann"
 CONTENT_URL = "https://np-cnotice-stock.eastmoney.com/api/content/ann"
 MARKET_FILTER = "m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048"
 TOP_N = 10
 REASON_COUNT = 5
+INDEX_NAMES = {
+    "1.000001": "上证指数",
+    "0.399001": "深证成指",
+    "0.399006": "创业板指",
+    "1.000688": "科创50",
+    "1.000300": "沪深300",
+}
+# Use the A-share series for the two-market total, without counting B shares.
+A_SHARE_MARKETS = ("1.000002", "0.399107")
 
 
 def _number(value):
@@ -47,6 +57,69 @@ def _json_get(url, params):
     response.raise_for_status()
     # The endpoint is UTF-8; requests' generic text/html fallback can choose Latin-1.
     return json.loads(response.content.decode("utf-8-sig"))
+
+
+def fetch_market_indices(now=None):
+    """Return the latest available session's index quotes and Shanghai/Shenzhen turnover."""
+    now = now or datetime.now(CHINA)
+    secids = (*INDEX_NAMES, *A_SHARE_MARKETS)
+    payload = _json_get(INDEX_URL, {
+        "secids": ",".join(secids), "fields": "f2,f3,f5,f6,f12,f13,f124", "fltt": 2, "invt": 2,
+    })
+    if payload.get("rc") != 0 or not payload.get("data"):
+        raise ValueError("指数行情接口未返回有效数据")
+
+    rows = payload["data"].get("diff") or []
+    if isinstance(rows, dict):
+        rows = rows.values()
+    quotes = {}
+    for row in rows:
+        secid = f"{row.get('f13')}.{row.get('f12')}"
+        stamp = _number(row.get("f124"))
+        if secid not in secids or stamp is None or not 1262275200 <= stamp <= now.timestamp() + 300:
+            continue
+        quoted_at = datetime.fromtimestamp(stamp, CHINA)
+        if secid not in quotes or quoted_at > quotes[secid][0]:
+            quotes[secid] = (quoted_at, row)
+    if not quotes:
+        raise ValueError("指数行情缺少有效时间")
+
+    trading_day = max(quoted_at.date() for quoted_at, _ in quotes.values())
+    items = []
+    for secid, name in INDEX_NAMES.items():
+        if secid not in quotes:
+            continue
+        quoted_at, row = quotes[secid]
+        price, change = _number(row.get("f2")), _number(row.get("f3"))
+        if quoted_at.date() != trading_day or price is None or price <= 0 or change is None:
+            continue
+        title = f"A股行情｜{name} {price:.2f}点 {change:+.2f}%（{quoted_at:%Y-%m-%d %H:%M} 北京时间）"
+        items.append({"title": title, "url": f"https://quote.eastmoney.com/zs{secid.split('.')[1]}.html"})
+
+    turnover = []
+    for secid in A_SHARE_MARKETS:
+        if secid not in quotes:
+            continue
+        quoted_at, row = quotes[secid]
+        volume, amount = _number(row.get("f5")), _number(row.get("f6"))
+        if quoted_at.date() == trading_day and volume is not None and amount is not None and min(volume, amount) >= 0:
+            turnover.append((quoted_at, volume, amount))
+    if len(turnover) == len(A_SHARE_MARKETS):
+        # f5 is in lots (手), f6 is in yuan. Show differing quote minutes as a range.
+        first_time, last_time = sorted(quoted_at.strftime("%H:%M") for quoted_at, _, _ in turnover)
+        quote_time = first_time if first_time == last_time else f"{first_time}–{last_time}"
+        total_volume = sum(volume for _, volume, _ in turnover) / 100_000_000
+        total_amount = sum(amount for _, _, amount in turnover) / 100_000_000
+        title = (
+            f"A股行情｜沪深A股成交量 {total_volume:.2f}亿手，成交额 {total_amount:.2f}亿元"
+            f"（{trading_day} {quote_time} 北京时间）"
+        )
+        items.insert(0, {"title": title, "url": "https://quote.eastmoney.com/center/gridlist.html#hszs"})
+
+    if not items:
+        raise ValueError("指数点位与沪深成交数据暂缺")
+    print(f"[A股行情] 行情日期{trading_day}，获取{len(items)}条成交和指数行情")
+    return {"status": "success", "items": items}
 
 
 def parse_ranking(payload, direction, now):

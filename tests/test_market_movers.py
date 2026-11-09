@@ -96,5 +96,34 @@ class MarketMoversTests(unittest.TestCase):
         self.assertEqual(len(results['a-share-movers']), 1)
 
 
+class MarketIndicesTests(unittest.TestCase):
+    def test_turnover_uses_a_share_quotes_and_correct_units(self):
+        rows = [
+            row('000001', 0.55, f13=1, f2=3669.42, f5=900_000_000, f6=900_000_000_000),
+            row('000002', 0.56, f13=1, f5=200_000_000, f6=400_000_000_000),
+            row('399107', 0.59, f13=0, f5=300_000_000, f6=500_000_000_000),
+        ]
+        with patch.object(market, '_json_get', return_value={'rc': 0, 'data': {'diff': rows}}):
+            items = market.fetch_market_indices(NOW)['items']
+        self.assertEqual(len(items), 2)
+        self.assertIn('成交量 5.00亿手，成交额 9000.00亿元', items[0]['title'])
+        self.assertIn('上证指数 3669.42点 +0.55%', items[1]['title'])
+        self.assertTrue(all('2026-11-04 15:35' in item['title'] for item in items))
+
+    def test_mixed_session_does_not_add_old_quotes_or_turnover(self):
+        previous_session = (QUOTED - timedelta(days=1)).timestamp()
+        rows = {
+            '0': row('000001', 0.55, f13=1),
+            '1': row('000002', 0.56, f13=1, f5=200_000_000, f6=400_000_000_000),
+            '2': row('399107', 0.59, f13=0, f5=300_000_000, f6=500_000_000_000, f124=previous_session),
+            '3': row('399001', 0.49, f13=0, f124=previous_session),
+            '4': row('399006', float('nan'), f13=0),
+        }
+        with patch.object(market, '_json_get', return_value={'rc': 0, 'data': {'diff': rows}}):
+            items = market.fetch_market_indices(NOW)['items']
+        self.assertEqual(len(items), 1)
+        self.assertIn('上证指数', items[0]['title'])
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -603,6 +603,13 @@ class NewsAnalyzer:
             if max_items > 0:
                 items = items[:max_items]
 
+            if platform_id == "a-share-indices":
+                # 行情保留固定顺序与报价时点，展示时去掉热榜排名和采集次数。
+                items = [
+                    {"title": item["title"].removeprefix("A股行情｜"), "url": item["url"]}
+                    for item in items
+                ]
+
             if items:
                 standalone_data["platforms"].append({
                     "id": platform_id,

@@ -65,8 +65,8 @@ platforms:
   enabled: true
   api_url: ""
   sources:
-    - id: "a-share-movers"
-      name: "A股涨跌幅榜（东方财富行情）"
+    - id: "a-share-indices"
+      name: "A股成交量及指数行情（东方财富）"
       expected_domain: "eastmoney.com"
     - id: "cls-hot"
       name: "财联社热门"
@@ -231,7 +231,7 @@ display:
     standalone: true
     ai_analysis: true
   standalone:
-    platforms: ["a-share-movers"]
+    platforms: ["a-share-indices"]
     rss_feeds: []
     max_items: 20
 
