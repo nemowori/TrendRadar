@@ -149,6 +149,16 @@ rss:
       name: "央视《新闻联播》"
       url: "https://tv.cctv.com/lm/xwlb/"
 
+finance_brief:
+  enabled: true
+  watchlist:
+    - "600938"  # 中国海油
+    - "000651"  # 格力电器
+    - "002555"  # 三七互娱
+    - "603444"  # 吉比特
+    - "605499"  # 东鹏饮料
+    - "002709"  # 天赐材料
+
 report:
   mode: "daily"
                                       # daily = 当日汇总，按时推送当天所有匹配新闻（会包含之前推过的）

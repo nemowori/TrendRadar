@@ -575,6 +575,7 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
 
     # RSS 配置
     config["RSS"] = _load_rss_config(config_data)
+    config["FINANCE_BRIEF"] = config_data.get("finance_brief") or {}
 
     # AI 模型共享配置
     config["AI"] = _load_ai_config(config_data)

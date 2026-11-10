@@ -146,7 +146,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: delivery-ledger-v1-${{ github.ref_name }}
-          path: .delivery-state/state.json
+          path: |
+            .delivery-state/state.json
+            .delivery-state/brief-events.json
           include-hidden-files: true
           retention-days: 90
           if-no-files-found: error
@@ -172,5 +174,5 @@ jobs:
       - name: Explain report coverage
         run: |
           echo "覆盖财经、国际局势、战争地缘、能源期货、气候灾害与产业；DeepSeek生成中文市场影响分析。" >> "$GITHUB_STEP_SUMMARY"
-          echo "北京时间08:00、11:00、17:00各推送一次截至当时的当日汇总；平台可能延迟。" >> "$GITHUB_STEP_SUMMARY"
+          echo "北京时间08:00、11:00、17:00分别推送盘前、盘中、收盘简报；平台可能延迟。" >> "$GITHUB_STEP_SUMMARY"
           echo "采集状态使用 GitHub Cache 跨次恢复；缓存可能被回收，不作为永久备份。" >> "$GITHUB_STEP_SUMMARY"

@@ -15,12 +15,14 @@ from typing import Dict, List, Optional, Tuple
 from trendradar.context import AppContext
 from trendradar import __version__
 from trendradar.core import load_config
-from trendradar.core.analyzer import convert_keyword_stats_to_platform_stats
+from trendradar.core.analyzer import convert_keyword_stats_to_platform_stats, count_rss_frequency
+from trendradar.core.frequency import matches_word_groups
 from trendradar.crawler import DataFetcher
 from trendradar.storage import convert_crawl_results_to_news_data
 from trendradar.utils.time import DEFAULT_TIMEZONE, is_within_days, calculate_days_old
 from trendradar.ai import AIAnalyzer, AIAnalysisResult
 from trendradar.core.scheduler import ResolvedSchedule
+from trendradar.finance_brief import BRIEF_PERIODS, BriefHistory, finance_sections
 from trendradar.commands import check_all_versions, run_doctor, run_test_notification, handle_status_commands
 from trendradar.commands.version import _fetch_remote_version, _parse_version
 
@@ -656,6 +658,12 @@ class NewsAnalyzer:
 
         return standalone_data
 
+    def _finance_brief_active(self, schedule: Optional[ResolvedSchedule]) -> bool:
+        return bool(
+            schedule and schedule.push and schedule.period_key in BRIEF_PERIODS
+            and self.ctx.config.get("FINANCE_BRIEF", {}).get("enabled")
+        )
+
     def _run_analysis_pipeline(
         self,
         data_source: Dict,
@@ -673,8 +681,42 @@ class NewsAnalyzer:
         standalone_data: Optional[Dict] = None,
         schedule: ResolvedSchedule = None,
         rss_new_urls: Optional[set] = None,
+        raw_rss_items: Optional[List[Dict]] = None,
     ) -> Tuple[List[Dict], Optional[str], Optional[AIAnalysisResult], Optional[List[Dict]], Optional[Dict], Optional[List[Dict]]]:
         """统一的分析流水线：数据处理 → 统计计算（关键词/AI筛选）→ AI分析 → HTML生成"""
+
+        brief = self._finance_brief_active(schedule)
+        if brief:
+            now = self.ctx.get_time()
+            history = BriefHistory(now.date())
+            if self.filter_method == "keyword":
+                def keep(title, url):
+                    return matches_word_groups(title, word_groups, filter_words, global_filters) and history.keep_news(title, url)
+
+                # Remove already delivered events before each keyword group's item limit is applied.
+                original_total = sum(len(titles) for titles in data_source.values())
+                data_source = {
+                    source: {title: item for title, item in titles.items() if keep(title, item.get("url", ""))}
+                    for source, titles in data_source.items()
+                }
+                if raw_rss_items is not None and self.ctx.config.get("DISPLAY", {}).get("REGIONS", {}).get("RSS", True):
+                    remaining_rss = [item for item in raw_rss_items if keep(item["title"], item.get("url", ""))]
+                    rss_items, _ = count_rss_frequency(
+                        remaining_rss, word_groups, filter_words, global_filters,
+                        max_news_per_keyword=self.ctx.config.get("MAX_NEWS_PER_KEYWORD", 0),
+                        sort_by_position_first=self.ctx.config.get("SORT_BY_POSITION_FIRST", False),
+                        timezone=self.ctx.timezone, rank_threshold=self.rank_threshold, quiet=True,
+                    )
+                    rss_new_items = None
+
+            watchlist = self.ctx.config["FINANCE_BRIEF"].get("watchlist", [])
+            standalone_data = {
+                "platforms": [
+                    *((standalone_data or {}).get("platforms", [])),
+                    *finance_sections(now, schedule.period_key, watchlist, history),
+                ],
+                "rss_feeds": (standalone_data or {}).get("rss_feeds", []),
+            }
 
         # 根据筛选策略选择数据处理方式
         if self.filter_method == "ai":
@@ -712,6 +754,8 @@ class NewsAnalyzer:
                 mode=mode, global_filters=global_filters, quiet=quiet,
             )
 
+        if brief and self.filter_method == "keyword":
+            total_titles = original_total
         self._hotlist_total_count = total_titles
 
         # 如果是 platform 模式，转换数据结构
@@ -725,10 +769,10 @@ class NewsAnalyzer:
         # AI 分析（如果启用，用于 HTML 报告）
         ai_result = None
         ai_config = self.ctx.config.get("AI_ANALYSIS", {})
-        if ai_config.get("ENABLED", False) and stats:
+        if ai_config.get("ENABLED", False) and (stats or (brief and (rss_items or standalone_data))):
             # 获取模式策略来确定报告类型
             mode_strategy = self._get_mode_strategy()
-            report_type = mode_strategy["report_type"]
+            report_type = schedule.period_name if brief else mode_strategy["report_type"]
             ai_result = self._run_ai_analysis(
                 stats, rss_items, mode, report_type, id_to_name,
                 current_results=data_source, schedule=schedule,
@@ -819,7 +863,9 @@ class NewsAnalyzer:
         # 检查是否有有效内容（热榜或RSS）
         has_news_content = self._has_valid_content(stats, new_titles)
         has_rss_content = bool(rss_items and len(rss_items) > 0)
-        has_any_content = has_news_content or has_rss_content
+        brief = self._finance_brief_active(schedule)
+        has_brief_content = brief and bool((standalone_data or {}).get("platforms"))
+        has_any_content = has_news_content or has_rss_content or has_brief_content
 
         # 计算热榜匹配条数
         news_count = sum(len(stat.get("titles", [])) for stat in stats) if stats else 0
@@ -836,6 +882,8 @@ class NewsAnalyzer:
                 content_parts.append(f"热榜 {news_count} 条")
             if rss_count > 0:
                 content_parts.append(f"RSS {rss_count} 条")
+            if has_brief_content:
+                content_parts.append("行情与日历")
             total_count = news_count + rss_count
             print(f"[推送] 准备发送：{' + '.join(content_parts)}，合计 {total_count} 条")
 
@@ -904,6 +952,11 @@ class NewsAnalyzer:
                     scheduler = self.ctx.create_scheduler()
                     date_str = self.ctx.format_date()
                     scheduler.record_execution(schedule.period_key, "push", date_str)
+                if brief and results.get("dingtalk"):
+                    try:
+                        BriefHistory(self.ctx.get_time().date()).record(stats, rss_items, standalone_data)
+                    except OSError as error:
+                        print(f"[分时简报] 已发送，事件记录写入失败：{type(error).__name__}")
 
             return True
 
@@ -1485,6 +1538,7 @@ class NewsAnalyzer:
                     standalone_data=standalone_data,
                     schedule=schedule,
                     rss_new_urls=rss_new_urls,
+                    raw_rss_items=raw_rss_items,
                 )
 
                 combined_id_to_name = {**historical_id_to_name, **id_to_name}
@@ -1529,6 +1583,7 @@ class NewsAnalyzer:
                     standalone_data=standalone_data,
                     schedule=schedule,
                     rss_new_urls=rss_new_urls,
+                    raw_rss_items=raw_rss_items,
                 )
 
                 combined_id_to_name = {**historical_id_to_name, **id_to_name}
@@ -1557,6 +1612,7 @@ class NewsAnalyzer:
                     standalone_data=standalone_data,
                     schedule=schedule,
                     rss_new_urls=rss_new_urls,
+                    raw_rss_items=raw_rss_items,
                 )
         else:
             # incremental 模式：只使用当前抓取的数据
@@ -1579,6 +1635,7 @@ class NewsAnalyzer:
                 standalone_data=standalone_data,
                 schedule=schedule,
                 rss_new_urls=rss_new_urls,
+                raw_rss_items=raw_rss_items,
             )
 
         if html_file:
@@ -1591,7 +1648,7 @@ class NewsAnalyzer:
             # 避免覆盖译文、避免重复翻译，并保证网页报告与推送译文一致）
             self._send_notification_if_needed(
                 stats,
-                mode_strategy["report_type"],
+                schedule.period_name if self._finance_brief_active(schedule) else mode_strategy["report_type"],
                 self.report_mode,
                 failed_ids=failed_ids,
                 new_titles=new_titles,

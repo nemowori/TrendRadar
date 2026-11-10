@@ -1,8 +1,8 @@
-# 北京时间每天08:00、11:00、17:00各推送一次当日财经新闻汇总。
+# 北京时间每天08:00、11:00、17:00各推送一次分时财经简报。
 # 两小时窗口允许 GitHub 调度延迟；同一窗口只推送一次。
 custom:
-  name: "A股每日三次汇总"
-  description: "每天早间、午间、收盘后集中阅读财经新闻"
+  name: "A股每日三次分时简报"
+  description: "盘前看隔夜与日程，盘中看上午数据与增量，收盘后看全天量价与新增进展"
   default:
     collect: true
     analyze: false
@@ -14,21 +14,21 @@ custom:
       push: true
   periods:
     morning:
-      name: "A股早间新闻"
+      name: "A股盘前简报"
       start: "08:00"
       end: "10:00"
       analyze: true
       push: true
       report_mode: "daily"
     midday:
-      name: "A股午间新闻"
+      name: "A股盘中简报"
       start: "11:00"
       end: "13:00"
       analyze: true
       push: true
       report_mode: "daily"
     after_market:
-      name: "A股收盘后新闻"
+      name: "A股收盘简报"
       start: "17:00"
       end: "19:00"
       analyze: true

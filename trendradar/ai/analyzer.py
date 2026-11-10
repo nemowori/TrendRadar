@@ -168,8 +168,12 @@ class AIAnalyzer:
         # 准备新闻内容并获取统计数据
         prepared = self._prepare_news_content(stats, rss_stats)
         total_news = prepared.hotlist_total + prepared.rss_total
+        standalone_content = ""
+        standalone_count = 0
+        if self.include_standalone and standalone_data:
+            standalone_content, standalone_count = self._prepare_standalone_content(standalone_data)
 
-        if not prepared.news_content and not prepared.rss_content:
+        if not prepared.news_content and not prepared.rss_content and not standalone_content:
             return AIAnalysisResult(
                 success=False,
                 skipped=True,
@@ -204,11 +208,6 @@ class AIAnalyzer:
             from trendradar.market_movers import read_market_context
             user_prompt = user_prompt.replace("{market_content}", read_market_context())
 
-        # 构建独立展示区内容
-        standalone_content = ""
-        standalone_count = 0
-        if self.include_standalone and standalone_data:
-            standalone_content, standalone_count = self._prepare_standalone_content(standalone_data)
         user_prompt = user_prompt.replace("{standalone_content}", standalone_content)
 
         if self.debug:
