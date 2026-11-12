@@ -121,6 +121,14 @@ rss:
       name: "路透社（Google 新闻索引）"
       url: "https://news.google.com/rss/search?q=site%3Areuters.com+when%3A1d&hl=en-US&gl=US&ceid=US%3Aen"
       max_items: 40
+    - id: "bloomberg-markets"
+      name: "彭博社·市场"
+      url: "https://www.bloomberg.com/feeds/markets/news.rss"
+      max_items: 25
+    - id: "bloomberg-economics"
+      name: "彭博社·经济"
+      url: "https://www.bloomberg.com/feeds/economics/news.rss"
+      max_items: 25
     - id: "ft-global-economy"
       name: "金融时报·全球经济"
       url: "https://www.ft.com/global-economy?format=rss"
