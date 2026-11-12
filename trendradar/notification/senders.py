@@ -256,7 +256,7 @@ def send_to_dingtalk(
         proxy_url: 代理 URL（可选）
         mode: 报告模式 (daily/current)
         account_label: 账号标签（多账号时显示）
-        batch_size: 批次大小（字节）
+        batch_size: 单批 JSON 请求体的 UTF-8 字节上限
         batch_interval: 批次发送间隔（秒）
         split_content_func: 内容分批函数
         rss_items: RSS 统计条目列表（可选，用于合并推送）
@@ -277,68 +277,76 @@ def send_to_dingtalk(
     ai_content = _render_ai_analysis(ai_analysis, "dingtalk") if ai_analysis else None
     ai_stats = _extract_ai_stats(ai_analysis)
 
-    # 预留批次头部空间，避免添加头部后超限
+    title = f"TrendRadar 热点分析报告 - {report_type}"
+
+    def encode_request(content: str) -> bytes:
+        payload = {"msgtype": "markdown", "markdown": {"title": title, "text": content}}
+        return json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+    # JSON 转义后的换行和引号占额外字节，发送前以实际请求体为准。
     header_reserve = get_max_batch_header_size("dingtalk")
-    batches = split_content_func(
-        report_data,
-        "dingtalk",
-        update_info,
-        max_bytes=batch_size - header_reserve,
-        mode=mode,
-        rss_items=rss_items,
-        rss_new_items=rss_new_items,
-        ai_content=ai_content,
-        standalone_data=standalone_data,
-        ai_stats=ai_stats,
-        report_type=report_type,
-    )
-
-    # 统一添加批次头部（已预留空间，不会超限）
-    batches = add_batch_headers(batches, "dingtalk", batch_size)
-
-    print(f"{log_prefix}消息分为 {len(batches)} 批次发送 [{report_type}]")
-
-    # 逐批发送
-    for i, batch_content in enumerate(batches, 1):
-        content_size = len(batch_content.encode("utf-8"))
-        print(
-            f"发送{log_prefix}第 {i}/{len(batches)} 批次，大小：{content_size} 字节 [{report_type}]"
+    text_budget = batch_size - len(encode_request(""))
+    for _ in range(4):
+        if text_budget <= header_reserve:
+            print(f"{log_prefix}消息字节预算过小 [{report_type}]")
+            return False
+        batches = split_content_func(
+            report_data,
+            "dingtalk",
+            update_info,
+            max_bytes=text_budget - header_reserve,
+            mode=mode,
+            rss_items=rss_items,
+            rss_new_items=rss_new_items,
+            ai_content=ai_content,
+            standalone_data=standalone_data,
+            ai_stats=ai_stats,
+            report_type=report_type,
         )
+        batches = add_batch_headers(batches, "dingtalk", text_budget)
+        request_bodies = [encode_request(content) for content in batches]
+        excess = max(map(len, request_bodies), default=0) - batch_size
+        if excess <= 0:
+            break
+        text_budget -= excess
+    else:
+        print(f"{log_prefix}分批后的请求体仍超过 {batch_size} 字节 [{report_type}]")
+        return False
 
-        payload = {
-            "msgtype": "markdown",
-            "markdown": {
-                "title": f"TrendRadar 热点分析报告 - {report_type}",
-                "text": batch_content,
-            },
-        }
+    batch_count = len(request_bodies)
+    print(f"{log_prefix}消息分为 {batch_count} 批次发送 [{report_type}]")
+
+    for i, body in enumerate(request_bodies, 1):
+        print(
+            f"发送{log_prefix}第 {i}/{batch_count} 批次，请求体大小：{len(body)} 字节 [{report_type}]"
+        )
 
         try:
             response = requests.post(
-                webhook_url, headers=headers, json=payload, proxies=proxies, timeout=30
+                webhook_url, headers=headers, data=body, proxies=proxies, timeout=30
             )
             if response.status_code == 200:
                 result = response.json()
                 if result.get("errcode") == 0:
-                    print(f"{log_prefix}第 {i}/{len(batches)} 批次发送成功 [{report_type}]")
+                    print(f"{log_prefix}第 {i}/{batch_count} 批次发送成功 [{report_type}]")
                     # 批次间间隔
-                    if i < len(batches):
+                    if i < batch_count:
                         time.sleep(batch_interval)
                 else:
                     print(
-                        f"{log_prefix}第 {i}/{len(batches)} 批次发送失败 [{report_type}]，错误：{result.get('errmsg')}"
+                        f"{log_prefix}第 {i}/{batch_count} 批次发送失败 [{report_type}]，错误：{result.get('errmsg')}"
                     )
                     return False
             else:
                 print(
-                    f"{log_prefix}第 {i}/{len(batches)} 批次发送失败 [{report_type}]，状态码：{response.status_code}"
+                    f"{log_prefix}第 {i}/{batch_count} 批次发送失败 [{report_type}]，状态码：{response.status_code}"
                 )
                 return False
         except Exception as e:
-            print(f"{log_prefix}第 {i}/{len(batches)} 批次发送出错 [{report_type}]：{e}")
+            print(f"{log_prefix}第 {i}/{batch_count} 批次发送出错 [{report_type}]：{e}")
             return False
 
-    print(f"{log_prefix}所有 {len(batches)} 批次发送完成 [{report_type}]")
+    print(f"{log_prefix}所有 {batch_count} 批次发送完成 [{report_type}]")
 
     return True
 

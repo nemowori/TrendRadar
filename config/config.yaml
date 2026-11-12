@@ -129,6 +129,30 @@ rss:
       name: "彭博社·经济"
       url: "https://www.bloomberg.com/feeds/economics/news.rss"
       max_items: 25
+    - id: "nikkei-asia-google-news"
+      name: "日经亚洲（Google 新闻索引）"
+      url: "https://news.google.com/rss/search?q=site%3Aasia.nikkei.com+when%3A2d&hl=en-US&gl=US&ceid=US%3Aen"
+      max_items: 25
+    - id: "ap-google-news"
+      name: "美联社（Google 新闻索引）"
+      url: "https://news.google.com/rss/search?q=site%3Aapnews.com%2Farticle+when%3A1d&hl=en-US&gl=US&ceid=US%3Aen"
+      max_items: 25
+    - id: "platts-google-news"
+      name: "标普全球普氏·能源（Google 新闻索引）"
+      url: "https://news.google.com/rss/search?q=site%3Aspglobal.com%2Fenergy%2Fen%2Fnews-research%2Flatest-news+when%3A3d&hl=en-US&gl=US&ceid=US%3Aen"
+      max_items: 20
+    - id: "wsj-markets"
+      name: "华尔街日报·市场"
+      url: "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain"
+      max_items: 25
+    - id: "afp-google-news"
+      name: "法新社（Google 新闻索引）"
+      url: "https://news.google.com/rss/search?q=site%3Aafp.com%2Fen+when%3A3d&hl=en-US&gl=US&ceid=US%3Aen"
+      max_items: 25
+    - id: "economist-latest"
+      name: "经济学人"
+      url: "https://www.economist.com/latest/rss.xml"
+      max_items: 20
     - id: "ft-global-economy"
       name: "金融时报·全球经济"
       url: "https://www.ft.com/global-economy?format=rss"
@@ -423,7 +447,7 @@ advanced:
   # 消息分批大小（字节）- 内部配置，请勿修改
   batch_size:
     default: 4000
-    dingtalk: 20000
+    dingtalk: 18000                   # 钉钉单批 JSON 请求体的 UTF-8 字节预算
     feishu: 30000
     bark: 4000
     slack: 4000
