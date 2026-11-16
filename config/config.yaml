@@ -153,6 +153,10 @@ rss:
       name: "经济学人"
       url: "https://www.economist.com/latest/rss.xml"
       max_items: 20
+    - id: "wtop-washington-dc"
+      name: "华盛顿特区新闻（WTOP）"
+      url: "https://wtop.com/dc/feed/"
+      max_items: 10
     - id: "ft-global-economy"
       name: "金融时报·全球经济"
       url: "https://www.ft.com/global-economy?format=rss"
