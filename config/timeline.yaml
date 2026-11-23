@@ -5,11 +5,13 @@ custom:
   description: "盘前看隔夜与日程，盘中看上午数据与增量，收盘后看全天量价与新增进展"
   default:
     collect: true
+    search: false
     analyze: false
     ai_mode: "daily"
     push: false
     report_mode: "daily"
     once:
+      search: true
       analyze: true
       push: true
   periods:
@@ -17,6 +19,7 @@ custom:
       name: "A股盘前简报"
       start: "08:00"
       end: "10:00"
+      search: true
       analyze: true
       push: true
       report_mode: "daily"
@@ -24,6 +27,7 @@ custom:
       name: "A股盘中简报"
       start: "11:00"
       end: "13:00"
+      search: true
       analyze: true
       push: true
       report_mode: "daily"
@@ -31,6 +35,7 @@ custom:
       name: "A股收盘简报"
       start: "17:00"
       end: "19:00"
+      search: true
       analyze: true
       push: true
       report_mode: "daily"

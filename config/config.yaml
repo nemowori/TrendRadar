@@ -196,7 +196,7 @@ finance_brief:
     - "002709"  # 天赐材料
 
 web_search:
-  enabled: false                      # 是否开启联网搜索（true=开启, false=关闭，默认关闭）
+  enabled: true                       # 在三次财经简报的时间段内搜索
   provider: "deepseek"                # 搜索引擎（默认 deepseek，后续可扩展其他引擎）
   queries_file: ""                    # 搜索任务文件（留空默认用 config/search_queries.txt）
                                       # 自定义文件可放到 config/custom/search/ 目录，直接填文件名即可
@@ -207,8 +207,8 @@ web_search:
 
   # --- 条数与质量把关（先多拉一些候选，再筛出最靠谱的几条展示） ---
   fetch_count: 20                     # 每次向搜索引擎要多少条候选结果（DeepSeek 支持 1~50，多要不加钱）
-  max_items_per_topic: 8              # 每个搜索主题最终最多展示几条（0=不限制，也可以在 txt 里用 @数字 单独设置）
-  freshness_days: 7                   # 只看最近几天发布的内容（如 7=最近 7 天，0=不限制时间）
+  max_items_per_topic: 3               # 每个搜索主题最多展示三条
+  freshness_days: 3                    # 搜索最近三天发布的内容
   dedup_days: 7                       # 几天内搜过的内容不再重复标为"新增"（避免前几天的旧消息反复推送，0=只看当天）
 
   min_score: 0.5                      # 最低质量分（0.0~1.0，越高越严格，0=不过滤）
@@ -307,12 +307,14 @@ display:
     - standalone
     - hotlist
     - rss
+    - web_search
   regions:
     hotlist: true
     new_items: false
     rss: true
     standalone: true
     ai_analysis: true
+    web_search: true
   standalone:
     platforms: ["a-share-indices"]
     rss_feeds: []
@@ -432,6 +434,7 @@ ai_analysis:
   mode: "follow_report"
   max_news_for_analysis: 200
   include_rss: true
+  include_web_search: true
   include_standalone: true
   include_rank_timeline: false
 
