@@ -94,6 +94,28 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --no-dev
 
+      - name: Verify upgrade environment
+        if: github.event_name == 'workflow_dispatch' && inputs.check_only
+        env:
+          DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        run: |
+          uv run python - <<'PY'
+          from pathlib import Path
+          from trendradar import __version__
+          from trendradar.core import load_config
+          from trendradar.crawler.search import WebSearchFetcher
+          from trendradar.finance_brief import BriefHistory
+          config = load_config()
+          assert __version__ == Path('version').read_text().strip()
+          assert config['DINGTALK_WEBHOOK_URL'], 'Missing DingTalk credential'
+          assert config['AI']['API_KEY'], 'Missing AI credential'
+          print(f'Version {__version__}, dependencies and existing credentials verified')
+          PY
+          uv run python -m unittest discover -s tests -p test_finance_brief.py
+          uv run python -m unittest discover -s tests -p test_dingtalk_batches.py
+          uv run python -m unittest discover -s tests -p test_web_search.py
+
       - name: Check scheduled delivery
         id: delivery
         env:

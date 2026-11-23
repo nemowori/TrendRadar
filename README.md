@@ -8,17 +8,18 @@
 
 <a href="https://trendradar.sandev.cc/zh/" title="TrendRadar 官方网站"><strong>🌐 官方网站</strong></a> · <a href="https://trendradar.sandev.cc/zh/docs/quick-start/" title="TrendRadar 官网文档"><strong>📖 官网文档</strong></a> · <a href="https://trendradar.sandev.cc/zh/docs/self-hosted-sources/" title="AI 自建热榜数据源"><strong>AI 自建热榜数据源</strong></a>
 
-<a href="https://trendshift.io/repositories/14726" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14726" alt="sansan0%2FTrendRadar | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/14726?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-14726" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/14726/monthly" alt="sansan0%2FTrendRadar | Trendshift" width="250" height="55"/></a>
 
 
 [![GitHub Stars](https://img.shields.io/github/stars/sansan0/TrendRadar?style=flat-square&logo=github&color=yellow)](https://github.com/sansan0/TrendRadar/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/sansan0/TrendRadar?style=flat-square&logo=github&color=blue)](https://github.com/sansan0/TrendRadar/network/members)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v6.11.0-blue.svg)](https://github.com/sansan0/TrendRadar)
-[![MCP](https://img.shields.io/badge/MCP-v4.1.1-green.svg)](https://github.com/sansan0/TrendRadar)
+[![Version](https://img.shields.io/badge/version-v6.12.0-blue.svg)](https://github.com/sansan0/TrendRadar)
+[![MCP](https://img.shields.io/badge/MCP-v4.2.0-green.svg)](https://github.com/sansan0/TrendRadar)
 [![Docker Pulls](https://img.shields.io/docker/pulls/wantcat/trendradar?style=flat-square&logo=docker&logoColor=white&label=TrendRadar%20Pulls&color=2496ED)](https://hub.docker.com/r/wantcat/trendradar)
 [![Docker Pulls](https://img.shields.io/docker/pulls/wantcat/trendradar-mcp?style=flat-square&logo=docker&logoColor=white&label=MCP%20Pulls&color=2496ED)](https://hub.docker.com/r/wantcat/trendradar-mcp)
 [![RSS](https://img.shields.io/badge/RSS-订阅源支持-orange.svg?style=flat-square&logo=rss&logoColor=white)](#rss-订阅源支持v450-新增)
+[![联网搜索](https://img.shields.io/badge/联网搜索-定向主题追踪-F59E0B.svg?style=flat-square)](#联网搜索支持v6120-新增)
 [![AI翻译](https://img.shields.io/badge/AI-多语言推送-purple.svg?style=flat-square)](#ai-多语言翻译v520-新增)
 [![MCP Support](https://img.shields.io/badge/MCP-AI分析支持-FF6B6B?style=flat-square&logo=ai&logoColor=white)](#-mcp-客户端)
 [![AI分析推送](https://img.shields.io/badge/AI-分析推送-FF6B6B?style=flat-square&logo=openai&logoColor=white)](#ai-分析推送v500-新增)
@@ -190,28 +191,15 @@
 
 ## 🪄 赞助商
 
-> **[RapidProxy](https://www.rapidproxy.io/?ref=TrendRadar)** 提供全球住宅代理网络，面向多平台数据采集、AI 分析与自动化监控，支持智能轮换与粘性会话，灵活应对跨地区访问和持续数据获取需求。动态住宅 **\$0.55/GB 起**，静态住宅 **\$5/IP/月起**。
->
-> 使用专属优惠码 **`RAPID10`**，享 **9 折优惠**。[立即免费试用](https://www.rapidproxy.io/?ref=TrendRadar)。
+> **[DeepSider API](https://www.deepsiderapi.com/?utm_source=trendradar)** 提供统一的 AI API 接入服务，一个 API Key 即可调用 GPT、Claude、Gemini、DeepSeek 等主流模型。非号池，非逆向，大厂官方渠道。支持按量计费与实时用量监控，方便为你的自动化工作流接入 AI。
 
-<a href="https://www.rapidproxy.io/?ref=TrendRadar"><img src="_image/banner-rapidproxy.webp" alt="RapidProxy 海外高质量代理IP服务，90M+ 真实住宅 IPs，流量永不过期，支持 HTTP(S)/SOCKS5 与智能IP轮换，免费测试" width="100%"></a>
+<a href="https://www.deepsiderapi.com/?utm_source=trendradar"><img src="_image/banner-deepsider.webp" alt="DeepSider API：一个 API Key，连接全球主流 AI 模型；非号池，非逆向，大厂官方渠道" width="100%"></a>
 
 <br>
 
-> **[ApiSmart](https://www.apismart.ai/)** 提供统一的 AI 模型 API，支持智能路由、故障切换与按量计费。通过兼容接口接入多种模型，适用于热点分析、内容生成与自动化工作流，让 AI 应用集成更省心。
-
-<a href="https://www.apismart.ai/"><img src="_image/banner-apismart.webp" alt="ApiSmart 一站式 AI 模型 API，支持文本、图像与视频，智能路由、按量计费" width="100%"></a>
-
-<br>
-
-> **[Swiftproxy](https://www.swiftproxy.net/?ref=sansan0)** 专注于提供高质量动态与静态住宅代理，支持灵活的 IP 轮换与粘性会话。适用于热点追踪、网页抓取与自动化数据采集，为你的项目提供更稳定可靠的网络访问支持。
->
-> 使用优惠码 **`PROXY90`**，即可享受 **九折优惠**。
-
-<!-- 赞助商横幅尺寸：1400 × 300 px（14:3），以 100% 宽度展示；参考 302.AI 的 992 × 250 px 与火山引擎的 1400 × 400 px，新版沿用 1400 px 宽度并缩短高度。 -->
-<a href="https://www.swiftproxy.net/?ref=sansan0"><img src="_image/banner-swiftproxy.webp" alt="Swiftproxy 全球住宅代理" width="100%"></a>
-
-[有意赞助？点击查看赞助与合作详情](https://trendradar.sandev.cc/zh/sponsors/)
+<p align="center">
+<a href="https://trendradar.sandev.cc/zh/sponsors/">有意赞助？点击查看赞助与合作详情</a>
+</p>
 
 <br>
 
@@ -228,7 +216,6 @@
 
 - **GitHub Issues**：适合具体的技术问题。提问时请提供完整信息（截图、错误日志等），有助于快速定位。
 - **公众号交流**：建议优先在相关文章下的留言区交流。若需后台提问，**先点赞/推荐**文章是最好的"敲门砖"，我在后台都能感受到这份心意哟 (´▽`ʃ♡ƪ)。
-- **QQ 群交流**：无论你是 AI 小白还是硬核开发者，想求助技术问题还是分享折腾心得，这里都欢迎你。群里主打互助交流和灵感碰撞，入群请先看群公告；提问时描述清楚问题、附上截图，群友有空就会帮忙，大家的实战经验往往比我一个人更快更全面 🤝
 
 > **友情提示**：
 > 本项目为开源分享，非商业产品。把作者当朋友而非客服，沟通效率会更高哦！
@@ -253,8 +240,12 @@
 <a href="https://ocr.sandev.cc/zh/"><img src="_image/sanframe-icon.webp" alt="SanFrame" width="72" height="72"></a>
 </td>
 <td align="left">
-<strong>多设备资料与剪贴板管理</strong><br>
-集中管理文字、图片、文件与剪贴板，支持 Windows / macOS 与 Android 传输端局域网互传。桌面端支持按需同步、离线 OCR、截图标注和 PDF 处理，无需账号，本地优先。
+<strong>剪贴板与资料管理工作台</strong><br>
+随手截的图、复制的文字和文件引用自动保存在本机并按来源应用打标签，支持图片、文字与文件跨类型组合、备注、搜索命中高亮及关联找回；内置冻结/滚动截图与标注、离线 OCR 与 PDF 批量识别，也可另接模型识别表格和公式。
+<br><br>
+支持将选定资料单向镜像为 Markdown 文件夹交给 Obsidian 等工具使用；通过内置 AI 助手或外部 MCP 查找资料、整理跨类型组合与标签置顶，资料范围、操作权限及本机隐私脱敏（完全屏蔽或仅提供脱敏文字）全部由你掌控。
+<br><br>
+支持 Windows / macOS 局域网一次配对自动连接与按条件选择同步，并可与安卓「SanFrame 传输」互传文字、图片和文件。软件全部功能免费使用，无需账号。
 <br><br>
 <a href="https://ocr.sandev.cc/zh/"><strong>了解 SanFrame →</strong></a>
 </td>
@@ -269,6 +260,24 @@
 - **提示**：建议查看【历史更新】，明确具体的【功能内容】
 
 
+### 2026/11/21 - v6.12.0
+
+- **新增第三数据源：联网搜索定时追踪**：除了看热榜和 RSS 订阅，现在还可以让 TrendRadar 按你关心的主题（如行业政策、公司动态、政府公告等）定时去全网搜索最新网页内容，独立成区展示，不受热榜关键词和 AI 筛选的过滤限制
+- **更懂内容的质量筛选漏斗**：默认接入 DeepSeek 网页搜索接口（架构可扩展其他搜索引擎），支持用相关性分数、网站权威度、近几天新鲜度和每个主题最多展示条数层层把关，并支持「智能口语提炼」（把自然语言问题自动变成精准搜索词，当天复用不重复花钱）
+- **多渠道推送、AI 专题研判与可视化编辑器同步支持**：联网搜索结果完整接入飞书、钉钉、企微、Telegram、邮件等全部推送渠道；AI 分析新增「联网搜索专题研判」板块；可视化配置编辑器新增 `web_search` 参数区与 `search_queries.txt` 任务双向编辑
+- **HTML 报告视觉与交互全面升级**：全页面采用统一极简中性卡片与零 Emoji 线性图标；热榜每条新闻支持**悬停预览 / 点击固定查看排名变化轨迹折线图与对应时间点**；顶部数据指标支持毛玻璃悬停明细拆解与点击跳转；右下角升级为带阅读进度环的磨砂玻璃悬浮坞与可点击快捷键面板
+- **邮箱推送专项兼容优化**：发送邮件前自动净化脚本、交互按钮与浮层并缩小约 70%+ 体积，避免 Gmail 超 102KB 截断，同时让全部主题和分区纵向完整展开
+
+### 2026/11/21 - mcp-v4.2.0
+
+- **新增 4 个联网搜索 MCP 工具**：AI 客户端现可直接查询历史搜索记录（`get_latest_web_search`）、按关键词检索过往搜索内容（`search_web_history`）、查看联网搜索状态（`get_web_search_status`），以及按需发起实时全网搜索（`live_web_search`）
+- **网页正文读取增强**：`read_article` 工具新增 DeepSeek Fetch 正文抓取支持，AI 需要深读某条搜索结果或新闻原文时可直接获取干净 Markdown 正文
+- **配置资源与云端同步补全**：新增 `config://search-queries` 资源供 AI 读取当前搜索任务；远程存储同步同步支持 `search/{date}.db` 搜索数据库
+
+
+<details>
+<summary>👉 点击展开：<strong>历史更新</strong></summary>
+
 ### 2026/10/13 - v6.11.0
 
 - **中英文配置编辑**：可视化编辑器支持中英文切换，并提供英文配置模板，方便按熟悉的语言设置运行参数、关键词和调度规则
@@ -282,10 +291,6 @@
 - **智能分批发送**：超长消息自动按各渠道字节限制拆分（飞书 30KB、钉钉 20KB 等），配置读取自 config.yaml
 - **修复渠道误检测**：ntfy 不再因为默认地址被误报为"已配置"
 - **代码复用优化**：批次处理函数直接复用 trendradar 核心模块，不重复造轮子
-
-
-<details>
-<summary>👉 点击展开：<strong>历史更新</strong></summary>
 
 ### 2026/06/19 - v6.10.0
 
@@ -1047,9 +1052,21 @@ frequency_words.txt 文件增加了一个【必须词】功能，使用 + 号
 
 > 💡 RSS 使用与热榜相同的 `frequency_words.txt` 进行关键词过滤
 
+### **联网搜索支持**（v6.12.0 新增）
+
+作为热榜与 RSS 之外的**第三数据源**，联网搜索让你像雇了一位专职助理，按时去全网搜集你关心的特定主题（比如某行业最新政策、竞争对手动态、某个开源项目发布等）：
+
+- **独立成区，不被误过滤**：你主动指定去搜的内容本身就是想看的，结果会单独展示在「联网搜索」专区，**不会再被 `frequency_words.txt` 或 AI 筛选过滤掉**
+- **写法极简，空一行就是一个主题**：在 `config/search_queries.txt` 里直接写想搜的话，空一行就开启下一个主题；还支持 `site:gov.cn`（只看官网）、`-site:`（屏蔽营销号）、`!排除词`、`@数量`（限制条数）、`~7d`（只看近 7 天）等实用小技巧
+- **质量漏斗防刷屏**：单次广召回后按相关性分数（`min_score`）、网站权威度（`min_authority`）和单主题条数上限（`max_items_per_topic`）自动精选高价值内容，并自动跨天去重
+- **口语也能直接搜**：把 `query_mode` 设为 `smart` 后，直接写一句大白话（如「帮我关注低空经济最近一周的国家级政策」），AI 会自动提炼成精准搜索词并当天复用
+- **独立调度与 AI 专题研判**：可在 `timeline.yaml` 里单独控制哪些时段执行联网搜索；开启 AI 分析后还会自动输出「联网搜索专题研判」；可与热榜、RSS 混用，也能**单独只开联网搜索**运行
+
+> 💡 详细配置与快速上手见 [配置详解 - 让程序按时帮我全网搜特定主题](#13-让程序按时帮我全网搜特定主题)
+
 ### **可视化配置编辑器**
 
-提供基于 Web 的图形化配置界面，无需手动编辑 YAML 文件，通过表单即可完成所有配置项的修改与导出。
+提供基于 Web 的图形化配置界面，无需手动编辑 YAML 文件，通过表单即可完成 `config.yaml`、`frequency_words.txt`、`search_queries.txt`（联网搜索任务）和 `timeline.yaml` 的修改与导出。
 
 支持中英文界面切换和英文配置模板，方便按熟悉的语言设置运行参数、关键词和调度规则。
 
@@ -1078,8 +1095,8 @@ frequency_words.txt 文件增加了一个【必须词】功能，使用 + 号
 
 | 功能 | 说明 | 默认 |
 |------|------|------|
-| **调度系统** | 按周一到周日逐日编排：为每天分配不同时间段、推送模式和 AI 分析策略。**每个时段可独立设置筛选方式（关键词/AI）和关注方向**，实现不同时间看不同类型新闻。内置 5 种预设（always_on / morning_evening / office_hours / night_owl / custom），也可自定义。支持工作日/周末差异化、跨午夜时段、per-period 去重、时段冲突检测（v6.0.0 + v6.5.0） | morning_evening |
-| **内容顺序配置** | 通过 `display.region_order` 调整各区域（热榜、新增热点、RSS、独立展示区、AI 分析）的显示顺序；通过 `display.regions` 控制各区域是否显示（v5.2.0） | 见配置文件 |
+| **调度系统** | 按周一到周日逐日编排：为每天分配不同时间段、推送模式、联网搜索开关和 AI 分析策略。**每个时段可独立设置筛选方式（关键词/AI）和关注方向**，实现不同时间看不同类型新闻。内置 5 种预设（always_on / morning_evening / office_hours / night_owl / custom），也可自定义。支持工作日/周末差异化、跨午夜时段、per-period 去重、时段冲突检测（v6.0.0 + v6.5.0 + v6.12.0） | morning_evening |
+| **内容顺序配置** | 通过 `display.region_order` 调整各区域（热榜、RSS、联网搜索、新增热点、独立展示区、AI 分析）的显示顺序；通过 `display.regions` 控制各区域是否显示（v5.2.0 + v6.12.0） | 见配置文件 |
 | **显示模式切换** | `keyword`=按关键词分组，`platform`=按平台分组（v4.6.0 新增） | keyword |
 
 > 💡 详细配置教程见 [推送内容怎么显示？](#7-推送内容怎么显示) 和 [什么时候给我推送？](#8-什么时候给我推送)
@@ -1165,18 +1182,18 @@ ai_translation:
 
 > ⚠️ 部分海外媒体内容可能涉及敏感话题，AI 模型可能拒绝翻译，建议根据实际需求筛选订阅源
 
-### **HTML 报告浏览器增强**（v6.6.0 新增）
+### **HTML 报告浏览器增强与邮件兼容**（v6.6.0 新增 · v6.12.0 全面升级）
 
-在浏览器中打开推送的 HTML 报告，自动解锁增强体验（邮件客户端不受影响）：
+在浏览器中打开推送的 HTML 报告，自动解锁现代极简视觉与丰富交互（同时针对邮箱客户端做了专项净化兼容）：
 
-- **宽屏模式**：桌面端自动切换 1200px 宽屏布局，充分利用屏幕空间
-- **Tab 快速切换**：关键词分组和独立展区均支持 Tab 导航，告别长页面翻滚
-- **暗色模式**：一键切换深色主题，自动记住偏好
-- **实时搜索**：按 `/` 唤起搜索框，即时过滤新闻标题
-- **一键复制**：悬停新闻序号即可复制标题和链接
-- **快捷键**：`W` 宽屏、`D` 暗色、`/` 搜索、`?` 查看所有快捷键
+- **统一极简视觉与零 Emoji 图标**：全板块采用纯白发丝边框卡片与柔和语义色微标，亮/暗双模式一致通透，告别杂乱花哨排版
+- **排名变化轨迹与时间点浮层**：悬停或点击每条热榜的「排名胶囊」，即可弹出毛玻璃走势折线图与逐时间点排名变化明细（含脱榜断点标记）
+- **顶部指标悬停详解与联动跳转**：悬停头部三数据源、新增条目与 AI 分析数字可查看完整构成明细，点击直接切换对应分区视图
+- **宽屏分栏与分段滑块导航**：桌面端自动展开 1200px 宽屏布局，支持按热榜 / RSS / 联网搜索 / 独立展示 / 新增 / AI 分析一键切换视图
+- **高效阅读与一键复制**：按 `/` 实时搜索标题与摘要；悬停新闻序号、RSS 卡片、搜索词芯片或 AI 洞察块均可一键复制；右下角磨砂玻璃悬浮坞自带阅读进度环与可点击快捷键面板（`W` 宽屏、`D` 暗色、`/` 搜索、`?` 快捷操作）
+- **邮件客户端专项净化**：发送邮件前自动剥离脚本、死按钮与交互浮层，正文体积缩减约 70%+（远离 Gmail 102KB 截断红线），全部主题与分区纵向完整展开
 
-> 💡 所有增强功能基于渐进增强，邮件客户端仍显示原始 600px 布局，零回归
+> 💡 本地打开网页版保留完整交互；发往邮箱时自动净化为高兼容静态版，互不干扰
 
 ### **灵活存储架构**（v4.0.0 重大更新）
 
@@ -3524,19 +3541,92 @@ ai_translation:
 
 </details>
 
+### 13. 让程序按时帮我全网搜特定主题
+
+<details id="web-search-config">
+<summary>👉 点击展开：<strong>开启联网搜索定时追踪（v6.12.0 新增）</strong></summary>
+<br>
+
+#### 联网搜索适合什么场景？
+
+- **热榜**适合看「今天大家都在聊什么」，**RSS** 适合看「固定几个网站的更新」，而**联网搜索**就像雇了一位专职助理，按时去全网主动帮你查某个细分领域的最新动态（例如国家部委新政策、某家公司公告、某个开源项目新版本）。
+- 你在搜索清单里写的内容本身就是主动想看的，所以搜索结果会**单独展示在「联网搜索」专区**，不会被 `frequency_words.txt` 或 AI 筛选误伤过滤掉。
+
+#### 三步快速开启
+
+**第 1 步：准备 API Key**
+
+默认使用 **DeepSeek 原生网页搜索接口**（架构已支持后续扩展其他搜索引擎）：
+- 如果你已经配置了 DeepSeek 的 `AI_API_KEY`，**联网搜索会自动复用它**，不需要额外填一遍。
+- 如果你想单独指定一个搜索专用的 Key，可在 GitHub Secrets / `.env` 中添加 `WEB_SEARCH_API_KEY`（或 `DEEPSEEK_API_KEY`，也可在 `config/config.yaml` 里填入 `web_search.providers.deepseek.api_key`）。
+
+**第 2 步：在 `config/search_queries.txt` 里写你想搜的主题**
+
+打开 `config/search_queries.txt`（也可以直接用可视化配置编辑器在线编辑），**空一行就代表开启一个新的搜索主题**：
+
+```txt
+# 全局屏蔽词或屏蔽网站（所有主题都会自动过滤）
+[GLOBAL_FILTER]
+震惊
+-site:baijiahao.baidu.com
+
+[SEARCH_TOPICS]
+
+# 示例 1：只看政府官网近 14 天的低空经济政策，最多保留 5 条
+[低空经济最新政策]
+低空经济 最新政策 试点 site:gov.cn
+@5
+~14d
+
+# 示例 2：一个主题下写多行查询词，结果会自动合并去重
+[人工智能产业政策]
+人工智能 算力基础设施 国家发改委 工信部 最新政策
+人工智能 行业应用 补贴 试点政策
+@8
+~7d
+
+# 示例 3：只写一行也能直接搜（会自动用这一行当主题名）
+DeepSeek 最新模型 发布 更新
+```
+
+> 💡 **小技巧一览**：`[主题名]` 自定义展示标题；`site:gov.cn` 限定只看某类官网；`-site:域名` 屏蔽不想看的站点；`!排除词` 排除标题或摘要含该词的结果；`@数字` 限制单个主题最多保留几条；`~数字d` 限制只看近几天的新内容（`~0d` 表示不限天数）。
+
+**第 3 步：在 `config/config.yaml` 里打开开关**
+
+```yaml
+web_search:
+  enabled: true                   # 改成 true 即开启（也可用环境变量 WEB_SEARCH_ENABLED=true）
+  provider: "deepseek"            # 默认使用 DeepSeek 搜索
+  query_mode: "direct"            # direct=按原词直接搜 | smart=把长句大白话提炼成搜索词（当天复用）
+  fetch_count: 20                 # 每次先广泛召回 20 条（DeepSeek 按次计费，多拉不额外花钱）
+  max_items_per_topic: 8          # 精选后每个主题最多展示几条，防止刷屏
+  min_score: 0.45                 # 质量门槛（0~1，越高越严格，过滤擦边弱相关网页）
+  min_authority: 0                # 权威度门槛（-1不限，0常规，3权威，4官方）
+  freshness_days: 7               # 默认只看最近 7 天的新内容
+  dedup_days: 7                   # 最近 7 天推过的同一网页不再重复打扰
+```
+
+> 💡 **进阶提示**：
+> - 想省额度？在 `config/timeline.yaml` 里可以只在早晚等特定时段开启 `search: true`，其余时段设为 `false`。
+> - 想让 AI 一起总结搜索结果？在 `config/config.yaml` 中将 `ai_analysis.include_web_search` 保持 `true`，推送末尾会自动多出「联网搜索专题研判」板块。
+> - 也可以关闭 `platforms.enabled` 和 `rss.enabled`，**单独把 TrendRadar 当成定时全网搜索追踪工具来用**。
+
+</details>
+
 <br>
 
 ## ✨ AI 智能分析
 
-TrendRadar v3.0.0 新增了基于 **MCP (Model Context Protocol)** 的 AI 分析功能，让你可以通过自然语言与新闻数据对话，进行深度分析。
+TrendRadar v3.0.0 新增了基于 **MCP (Model Context Protocol)** 的 AI 分析功能，让你可以通过自然语言与新闻数据对话，进行深度分析。**mcp-v4.2.0 起已全面支持联网搜索历史查询、按需实时全网搜索与 DeepSeek 网页正文读取**（共提供 31 个 MCP 工具与 5 个配置资源）。
 
 
 ### ⚠️ 使用前必读
 
 
-**重要提示：AI 功能需要本地新闻数据支持**
+**重要提示：本地分析数据 + 按需实时联网搜索**
 
-AI 分析功能**不是**直接查询网络实时数据，而是分析你**本地已积累的新闻数据**（存储在 `output` 文件夹中）
+- 热榜和 RSS 分析默认查询你**本地已积累的新闻数据**（存储在 `output` 文件夹中，含 `news/`、`rss/`、`search/` 三类数据库）；
+- 如果你配置了 DeepSeek API Key，AI 还可以通过 `live_web_search` 按需发起实时全网搜索，并通过 `read_article`（支持 DeepSeek Fetch）抓取网页完整正文。
 
 
 #### 使用说明：

@@ -49,6 +49,7 @@ class BriefHistoryTests(unittest.TestCase):
         analyzer.ctx = Mock()
         analyzer.ctx.config = {
             "FINANCE_BRIEF": {"enabled": True},
+            "ENABLE_CRAWLER": True,
             "ENABLE_NOTIFICATION": True, "AI_ANALYSIS": {"ENABLED": False},
             "SHOW_VERSION_UPDATE": False,
         }
@@ -63,6 +64,8 @@ class BriefHistoryTests(unittest.TestCase):
         analyzer.frequency_file = None
         analyzer._hotlist_total_count = analyzer._rss_matched_count = analyzer._rss_total_count = 0
         analyzer._rss_source_total = analyzer._rss_source_failed = 0
+        analyzer._search_matched_count = analyzer._search_total_count = 0
+        analyzer._search_topic_total = analyzer._search_topic_failed = analyzer._search_new_count = 0
         schedule = Mock(push=True, period_key="midday", period_name="盘中简报", once_push=True)
         standalone = {"platforms": [{"id": "macro-quotes", "items": [{"title": "指数行情"}]}]}
         dispatch = analyzer.ctx.create_notification_dispatcher.return_value.dispatch_all
